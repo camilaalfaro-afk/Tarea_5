@@ -22,64 +22,64 @@ public:
 
 class OpenGLWindow : public Window {
 public:
-    void draw() override { cout << "OpenGL Window Drawing\n"; }
+    void draw() override { cout << "Dibujo en ventana OpenGL\n"; }
 };
 
 class OpenGLButton : public Button {
 public:
-    void draw() override { cout << "OpenGL Button Drawing\n"; }
+    void draw() override { cout << "Dibujo de botones en OpenGL\n"; }
 };
 
 class OpenGLShader : public Shader {
 public:
-    void compile() override { cout << "Compiling OpenGL Shader\n"; }
+    void compile() override { cout << "Compilando sombreador OpenGL\n"; }
 };
 
 class VulkanWindow : public Window {
 public:
-    void draw() override { cout << "Vulkan Window Drawing\n"; }
+    void draw() override { cout << "Dibujo en ventana con Vulkan\n"; }
 };
 
 class VulkanButton : public Button {
 public:
-    void draw() override { cout << "Vulkan Button Drawing\n"; }
+    void draw() override { cout << "Dibujo de botones en Vulkan\n"; }
 };
 
 class VulkanShader : public Shader {
 public:
-    void compile() override { cout << "Compiling Vulkan Shader\n"; }
+    void compile() override { cout << "Compilando sombreador Vulkan\n"; }
 };
 
 class RenderFactory {
 public:
     virtual ~RenderFactory() = default;
-    virtual unique_ptr<Window> createWindow() = 0;
-    virtual unique_ptr<Button> createButton() = 0;
-    virtual unique_ptr<Shader> createShader() = 0;
+    virtual unique_ptr<Window> creaWindow() = 0;
+    virtual unique_ptr<Button> creaButton() = 0;
+    virtual unique_ptr<Shader> creaShader() = 0;
 };
 
 class OpenGLFactory : public RenderFactory {
 public:
-    unique_ptr<Window> createWindow() override {
+    unique_ptr<Window> creaWindow() override {
         return make_unique<OpenGLWindow>();
     }
-    unique_ptr<Button> createButton() override {
+    unique_ptr<Button> creaButton() override {
         return make_unique<OpenGLButton>();
     }
-    unique_ptr<Shader> createShader() override {
+    unique_ptr<Shader> creaShader() override {
         return make_unique<OpenGLShader>();
     }
 };
 
 class VulkanFactory : public RenderFactory {
 public:
-    unique_ptr<Window> createWindow() override {
+    unique_ptr<Window> creaWindow() override {
         return make_unique<VulkanWindow>();
     }
-    unique_ptr<Button> createButton() override {
+    unique_ptr<Button> creaButton() override {
         return make_unique<VulkanButton>();
     }
-    unique_ptr<Shader> createShader() override {
+    unique_ptr<Shader> creaShader() override {
         return make_unique<VulkanShader>();
     }
 };
