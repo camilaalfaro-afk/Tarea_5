@@ -15,12 +15,12 @@ public:
     Account(const string& id, double initial_balance)
         : id(id), balance(initial_balance) {}
 
-    void deposit(double amount) {
+    void depositar(double amount) {
         lock_guard<mutex> lock(mtx);
         balance += amount;
     }
 
-    void withdraw(double amount) {
+    void retirar(double amount) {
         lock_guard<mutex> lock(mtx);
         balance -= amount;
     }
@@ -45,15 +45,15 @@ public:
         return instance;
     }
 
-    void deposit(Account* account, double amount) {
+    void depositar(Account* account, double amount) {
         if (account) {
-            account->deposit(amount);
+            account->depositar(amount);
         }
     }
 
-    void withdraw(Account* account, double amount) {
+    void retirar(Account* account, double amount) {
         if (account) {
-            account->withdraw(amount);
+            account->retirar(amount);
         }
     }
 };
