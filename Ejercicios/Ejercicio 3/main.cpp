@@ -8,7 +8,7 @@ using namespace std;
 class Expression {
 public:
     virtual ~Expression() = default;
-    virtual double evaluate(double x) const = 0;
+    virtual double eva(double x) const = 0;
     virtual shared_ptr<Expression> derivative() const = 0;
     virtual string toString() const = 0;
 };
@@ -17,7 +17,7 @@ class Constant : public Expression {
     double value;
 public:
     explicit Constant(double val) : value(val) {}
-    double evaluate(double) const override { return value; }
+    double eva(double) const override { return value; }
     shared_ptr<Expression> derivative() const override {
         return make_shared<Constant>(0);
     }
@@ -26,7 +26,7 @@ public:
 
 class Variable : public Expression {
 public:
-    double evaluate(double x) const override { return x; }
+    double eva(double x) const override { return x; }
     shared_ptr<Expression> derivative() const override {
         return make_shared<Constant>(1);
     }
@@ -40,8 +40,8 @@ public:
     Add(shared_ptr<Expression> l, shared_ptr<Expression> r)
         : left(move(l)), right(move(r)) {}
 
-    double evaluate(double x) const override {
-        return left->evaluate(x) + right->evaluate(x);
+    double eva(double x) const override {
+        return left->eva(x) + right->eva(x);
     }
     shared_ptr<Expression> derivative() const override {
         return make_shared<Add>(left->derivative(), right->derivative());
@@ -57,8 +57,8 @@ public:
     Multiply(shared_ptr<Expression> l, shared_ptr<Expression> r)
         : left(move(l)), right(move(r)) {}
 
-    double evaluate(double x) const override {
-        return left->evaluate(x) * right->evaluate(x);
+    double eva(double x) const override {
+        return left->eva(x) * right->eva(x);
     }
     shared_ptr<Expression> derivative() const override {
         auto term1 = make_shared<Multiply>(left->derivative(), right);
@@ -77,8 +77,8 @@ public:
     Power(shared_ptr<Expression> b, int exp)
         : base(move(b)), exponent(exp) {}
 
-    double evaluate(double x) const override {
-        return pow(base->evaluate(x), exponent);
+    double eva(double x) const override {
+        return pow(base->eva(x), exponent);
     }
     shared_ptr<Expression> derivative() const override {
         auto coeff = make_shared<Constant>(exponent);
@@ -96,8 +96,8 @@ class Sin : public Expression {
 public:
     explicit Sin(shared_ptr<Expression> a) : arg(move(a)) {}
 
-    double evaluate(double x) const override {
-        return sin(arg->evaluate(x));
+    double eva(double x) const override {
+        return sin(arg->eva(x));
     }
     shared_ptr<Expression> derivative() const override;
     string toString() const override {
@@ -110,8 +110,8 @@ class Cos : public Expression {
 public:
     explicit Cos(shared_ptr<Expression> a) : arg(move(a)) {}
 
-    double evaluate(double x) const override {
-        return cos(arg->evaluate(x));
+    double eva(double x) const override {
+        return cos(arg->eva(x));
     }
     shared_ptr<Expression> derivative() const override {
         auto negOne = make_shared<Constant>(-1);
