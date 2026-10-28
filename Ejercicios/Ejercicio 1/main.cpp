@@ -5,6 +5,7 @@
 #include <mutex>
 
 using namespace std;
+
 class Account {
 private:
     string id;
@@ -15,12 +16,12 @@ public:
     Account(const string& id, double initial_balance)
         : id(id), balance(initial_balance) {}
 
-    void depositar(double amount) {
+    void deposit(double amount) {
         lock_guard<mutex> lock(mtx);
         balance += amount;
     }
 
-    void retirar(double amount) {
+    void withdraw(double amount) {
         lock_guard<mutex> lock(mtx);
         balance -= amount;
     }
@@ -45,15 +46,15 @@ public:
         return instance;
     }
 
-    void depositar(Account* account, double amount) {
+    void deposit(Account* account, double amount) {
         if (account) {
-            account->depositar(amount);
+            account->deposit(amount);
         }
     }
 
-    void retirar(Account* account, double amount) {
+    void withdraw(Account* account, double amount) {
         if (account) {
-            account->retirar(amount);
+            account->withdraw(amount);
         }
     }
 };
