@@ -35,38 +35,38 @@ public:
 
 // operaciones binarias
 class Add : public Expression {
-    shared_ptr<Expression> left, right;
+    shared_ptr<Expression> izq, der;
 public:
     Add(shared_ptr<Expression> l, shared_ptr<Expression> r)
-        : left(move(l)), right(move(r)) {}
+        : izq(move(l)), der(move(r)) {}
 
     double eva(double x) const override {
-        return left->eva(x) + right->eva(x);
+        return izq->eva(x) + der->eva(x);
     }
     shared_ptr<Expression> derivative() const override {
-        return make_shared<Add>(left->derivative(), right->derivative());
+        return make_shared<Add>(izq->derivative(), der->derivative());
     }
     string toString() const override {
-        return "(" + left->toString() + " + " + right->toString() + ")";
+        return "(" + izq->toString() + " + " + der->toString() + ")";
     }
 };
 
 class Multiply : public Expression {
-    shared_ptr<Expression> left, right;
+    shared_ptr<Expression> izq, der;
 public:
     Multiply(shared_ptr<Expression> l, shared_ptr<Expression> r)
-        : left(move(l)), right(move(r)) {}
+        : izq(move(l)), der(move(r)) {}
 
     double eva(double x) const override {
-        return left->eva(x) * right->eva(x);
+        return izq->eva(x) * der->eva(x);
     }
     shared_ptr<Expression> derivative() const override {
-        auto term1 = make_shared<Multiply>(left->derivative(), right);
-        auto term2 = make_shared<Multiply>(left, right->derivative());
+        auto term1 = make_shared<Multiply>(izq->derivative(), der);
+        auto term2 = make_shared<Multiply>(izq, der->derivative());
         return make_shared<Add>(term1, term2);
     }
     string toString() const override {
-        return "(" + left->toString() + " * " + right->toString() + ")";
+        return "(" + izq->toString() + " * " + der->toString() + ")";
     }
 };
 
