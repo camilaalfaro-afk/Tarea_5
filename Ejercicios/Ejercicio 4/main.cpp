@@ -9,22 +9,23 @@ using namespace std;
 
 class Graph {
 private:
-    unordered_map<int, vector<int>> adj;
+    unordered_map<int, vector<int>> adjList;
 
 public:
-    void añadir(int u, int v) {
-        adj[u].push_back(v);
-        if (adj.find(v) == adj.end()) adj[v] = {};
+    void addEdge(int u, int v) {
+        adjList[u].push_back(v);
+        if (adjList.find(v) == adjList.end()) {
+            adjList[v] = {};
+        }
     }
 
-    const vector<int>& getVecinos(int u) const {
-        static const vector<int> vacio;
-        auto it = adj.find(u);
-        return (it != adj.end()) ? it->second : vacio;
+    const vector<int>& getNeighbors(int u) const {
+        static const vector<int> empty;
+        auto it = adjList.find(u);
+        return (it != adjList.end()) ? it->second : empty;
     }
 };
 
-// iterador interfaz
 class GraphIterator {
 public:
     virtual ~GraphIterator() = default;
@@ -32,17 +33,16 @@ public:
     virtual int next() = 0;
 };
 
-// Iterador BFS
 class BFSIterator : public GraphIterator {
 private:
-    const Graph& g;
+    const Graph& graph;
     queue<int> q;
-    unordered_set<int> visitado;
+    unordered_set<int> visited;
 
 public:
-    BFSIterator(const Graph& graph, int start) : g(graph) {
-        q.push(start);
-        visitado.insert(start);
+    BFSIterator(const Graph& g, int startNode) : graph(g) {
+        q.push(startNode);
+        visited.insert(startNode);
     }
 
     bool hasNext() override {
@@ -50,47 +50,50 @@ public:
     }
 
     int next() override {
-        int curr = q.front();
+        int current = q.front();
         q.pop();
 
-        for (int neighbor : g.getVecinos(curr)) {
-            if (visitado.find(neighbor) == visitado.end()) {
-                visitado.insert(neighbor);
+        for (int neighbor : graph.getNeighbors(current)) {
+            if (visited.find(neighbor) == visited.end()) {
+                visited.insert(neighbor);
                 q.push(neighbor);
             }
         }
-        return curr;
+
+        return current;
     }
 };
 
-// iterador dfs
 class DFSIterator : public GraphIterator {
 private:
-    const Graph& g;
+    const Graph& graph;
     stack<int> s;
-    unordered_set<int> visitado;
+    unordered_set<int> visited;
 
 public:
-    DFSIterator(const Graph& graph, int start) : g(graph) {
-        s.push(start);
+    DFSIterator(const Graph& g, int startNode) : graph(g) {
+        s.push(startNode);
     }
 
     bool hasNext() override {
-        while (!s.empty() && visitado.count(s.top())) {
+        while (!s.empty() && visited.find(s.top()) != visited.end()) {
             s.pop();
         }
         return !s.empty();
     }
 
     int next() override {
-        int curr = s.top();
+        int current = s.top();
         s.pop();
-        visitado.insert(curr);
+        visited.insert(current);
 
-        const auto& vecinos = g.getVecinos(curr);
-        for (auto it = vecinos.rbegin(); it != vecinos.rend(); ++it) {
-            if (!visitado.count(*it)) s.push(*it);
+        const auto& neighbors = graph.getNeighbors(current);
+        for (auto it = neighbors.rbegin(); it != neighbors.rend(); ++it) {
+            if (visited.find(*it) == visited.end()) {
+                s.push(*it);
+            }
         }
-        return curr;
+
+        return current;
     }
 };
