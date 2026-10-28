@@ -12,15 +12,15 @@ private:
     unordered_map<int, vector<int>> adj;
 
 public:
-    void addEdge(int u, int v) {
+    void añadir(int u, int v) {
         adj[u].push_back(v);
         if (adj.find(v) == adj.end()) adj[v] = {};
     }
 
-    const vector<int>& getNeighbors(int u) const {
-        static const vector<int> empty;
+    const vector<int>& getVecinos(int u) const {
+        static const vector<int> vacio;
         auto it = adj.find(u);
-        return (it != adj.end()) ? it->second : empty;
+        return (it != adj.end()) ? it->second : vacio;
     }
 };
 
@@ -37,12 +37,12 @@ class BFSIterator : public GraphIterator {
 private:
     const Graph& g;
     queue<int> q;
-    unordered_set<int> visited;
+    unordered_set<int> visitado;
 
 public:
     BFSIterator(const Graph& graph, int start) : g(graph) {
         q.push(start);
-        visited.insert(start);
+        visitado.insert(start);
     }
 
     bool hasNext() override {
@@ -53,9 +53,9 @@ public:
         int curr = q.front();
         q.pop();
 
-        for (int neighbor : g.getNeighbors(curr)) {
-            if (visited.find(neighbor) == visited.end()) {
-                visited.insert(neighbor);
+        for (int neighbor : g.getVecinos(curr)) {
+            if (visitado.find(neighbor) == visitado.end()) {
+                visitado.insert(neighbor);
                 q.push(neighbor);
             }
         }
@@ -68,7 +68,7 @@ class DFSIterator : public GraphIterator {
 private:
     const Graph& g;
     stack<int> s;
-    unordered_set<int> visited;
+    unordered_set<int> visitado;
 
 public:
     DFSIterator(const Graph& graph, int start) : g(graph) {
@@ -76,7 +76,7 @@ public:
     }
 
     bool hasNext() override {
-        while (!s.empty() && visited.count(s.top())) {
+        while (!s.empty() && visitado.count(s.top())) {
             s.pop();
         }
         return !s.empty();
@@ -85,11 +85,11 @@ public:
     int next() override {
         int curr = s.top();
         s.pop();
-        visited.insert(curr);
+        visitado.insert(curr);
 
-        const auto& neighbors = g.getNeighbors(curr);
-        for (auto it = neighbors.rbegin(); it != neighbors.rend(); ++it) {
-            if (!visited.count(*it)) s.push(*it);
+        const auto& vecinos = g.getVecinos(curr);
+        for (auto it = vecinos.rbegin(); it != vecinos.rend(); ++it) {
+            if (!visitado.count(*it)) s.push(*it);
         }
         return curr;
     }
