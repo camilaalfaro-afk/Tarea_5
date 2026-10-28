@@ -3,7 +3,6 @@
 #include <vector>
 #include <thread>
 #include <mutex>
-
 using namespace std;
 
 class Account {
